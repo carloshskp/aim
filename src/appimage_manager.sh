@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Import the icon manager functions
+source "$(pwd)/src/icon_manager.sh"
+
 # Function to install an .AppImage file
 install_appimage() {
   # List available .AppImage files
@@ -52,14 +55,9 @@ install_appimage() {
       else
         select icon in "${icons[@]}"; do
           if [[ -n "$icon" ]]; then
-            # Convert the icon to .png if necessary
+            # Check the icon format and convert if necessary
             if [[ "$icon" == *.ico || "$icon" == *.jpg ]]; then
-              if ffmpeg -i "$icon" "$icon_path" >/dev/null 2>&1; then
-                echo "Icon successfully converted to $icon_path."
-              else
-                echo "Error converting the icon. Using default icon."
-                cp "$(pwd)/assets/default-icon.png" "$icon_path"  # Replace with the path to the default icon
-              fi
+              convert_icon "$icon" "$icon_path"  # Call the convert_icon function
             else
               cp "$icon" "$icon_path"
               echo "Icon successfully copied to $icon_path."
